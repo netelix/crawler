@@ -1,0 +1,21 @@
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <td></td>
+    <td></td>
+    <td>Hosts linked</td>
+    <td>Pages</td>
+  </tr>
+  </thead>
+  <tbody>
+  <% hosts.each do |host| %>
+    <tr onclick="javascript:onTableRowClick(event, this)">
+      <td><%= link_to(host.host, admin_host_path(host)) %></td>
+      <td><%= 'available' if host.domain_available? %></td>
+      <td><%= host.number_of_linked_hosts %></td>
+      <td><%= host.number_of_crawled_pages || 0 %>/<%= host.number_of_pages %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<%= paginate hosts, param_name: :p %>

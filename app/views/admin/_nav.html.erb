@@ -1,0 +1,7 @@
+<% link_class = local_assigns[:link_class] %>
+<%= link_to t('.hosts'), admin_hosts_url, class: link_class %>
+<%= link_to t('.pages'), admin_pages_url, class: link_class %>
+<%= link_to('New crawl', new_crawl_admin_hosts_url,
+             class: link_class,
+             data: {remote: true, modal: true}
+    ) %>

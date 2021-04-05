@@ -1,0 +1,4 @@
+<%= bootstrap_form_with_mutation(new_crawl_form, start_crawl_admin_hosts_url) do |form| %>
+  <%= form.text_field(:url) %>
+  <%= form.submit('Start crawl') %>
+<% end %>

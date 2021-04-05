@@ -2,16 +2,18 @@ module Pages
   class ExtractEmails < Mutations::Command
     EMAIL_REGEX = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}/
 
-    required {
-      duck :nokogiri_html
-    }
+    required { duck :nokogiri_html }
 
     def execute
-      extracted_emails
+      clean_emails(extracted_emails)
     end
 
     def extracted_emails
       search_for_mailto_links + search_email_in_text
+    end
+
+    def clean_emails(emails)
+      emails.map { |email| email.gsub(' ', '').gsub("\u00A0", '') }
     end
 
     def search_for_mailto_links
@@ -26,7 +28,9 @@ module Pages
     def search_email_in_text
       emails = nokogiri_html.to_html.scrub.scan EMAIL_REGEX
       return [] if emails.nil? || emails.empty?
-      emails.reject { |e| e =~ /ajax-loader@2x.gif/ }
+
+      emails.reject { |e| e =~ /gif|png|jpg|jpeg$/ }
+
       return [] if emails.empty?
 
       emails.uniq

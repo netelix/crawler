@@ -1,4 +1,5 @@
 class Page < ApplicationRecord
+  belongs_to :host
   scope :from_backlinks, ->(host) {
     where("backlink_hosts::text LIKE '%#{host}%'")
   }

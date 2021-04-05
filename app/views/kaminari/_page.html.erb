@@ -1,0 +1,11 @@
+<% burn = (!@unburn_pagniator.present?) %>
+
+<% if page.current? %>
+  <li class="page-item">
+    <%= content_tag :a, page, remote: remote, rel: (page.next? ? 'next' : (page.prev? ? 'prev' : nil)), class: 'current-page page-link' %>
+  </li>
+<% else %>
+  <li class="page-item">
+    <%= link_to page, pager_url(page), remote: remote, rel: (page.next? ? 'next' : (page.prev? ? 'prev' : nil)), burn:((page > 1) && burn), class:"page-link" %>
+  </li>
+<% end %>

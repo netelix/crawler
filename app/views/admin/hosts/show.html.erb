@@ -1,0 +1,79 @@
+<div class="row">
+  <div class="col-7">
+    <h1 class="h3">Hosts > <%= host.host %></h1>
+  </div>
+  <div class="col-5 text-right">
+    <%= bootstrap_form_tag url: '', method: :get, html: {class: 'form-inline float-right'} do |form| %>
+      <%= form.text_field :q, hide_label: true, placeholder: "Search", value: params[:q] %>
+      <button type="submit" class="btn btn-secondary"><%= fa_icon('search') %></button>
+      <%= %>
+    <% end %>
+  </div>
+</div>
+<table class="table">
+  <tr>
+    <td class="text-right">Found pages</td>
+    <td><%= host.pages.count %></td>
+    <td class="text-right">Crawled pages</td>
+    <td><%= host.pages.where.not(crawled_at: nil).count %></td>
+  </tr>
+  <tr>
+    <td class="text-right">Linked hosts
+      <div class="small">
+        <%= link_to('start crawl', start_linked_hosts_crawl_admin_host_path(host), method: :post) %>
+      </div>
+    </td>
+    <td><%= host.links_to.count %>
+      <div class="small">
+        <%= "(last crawl at #{host.linked_hosts_crawled_at})" if host.linked_hosts_crawled_at %>
+      </div>
+    </td>
+    <td class="text-right">Emails from linked hosts</td>
+    <td><%= emails.reorder('email').limit(nil).pluck(:email).count %></td>
+  </tr>
+</table>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <%= link_to('Pages', admin_host_path(id: host.id, section: :pages), class: "nav-link #{:active if section_pages?}") %>
+  </li>
+  <li class="nav-item">
+    <%= link_to('Linked hosts', admin_host_path(id: host.id, section: :hosts), class: "nav-link #{:active if section_hosts?}") %>
+  </li>
+  <li class="nav-item">
+    <%= link_to('Linked emails', admin_host_path(id: host.id, section: :linked_emails), class: "nav-link #{:active if section_linked_emails?}") %>
+  </li>
+</ul>
+<% if section_pages? %>
+  <table class="table table-sm">
+    <tbody>
+    <% pages.each do |page| %>
+      <tr onclick="javascript:onTableRowClick(event, this)">
+        <td><%= link_to((page.title if page.title.present?), page.url, target: :blank) %>
+          <% if page.error %>
+            <div class="text-danger small"><%= page.error %></div>
+          <% end %>
+        </td>
+        <td><%= l(page.crawled_at, format: :short) if page.crawled_at %></td>
+        <td></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <%= paginate pages, param_name: :p %>
+<% elsif section_hosts? %>
+  <%= render('linked_hosts') %>
+<% elsif section_linked_emails? %>
+  <table class="table table-sm">
+    <tbody>
+    <% emails.each do |email| %>
+      <tr>
+        <td><%= email.email %></td>
+        <td><%= link_to(email.page.title, email.page.url) %></td>
+        <td><%= email.page.host.host %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>
+

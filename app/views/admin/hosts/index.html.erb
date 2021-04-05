@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-7">
+    <h1>Hosts</h1>
+  </div>
+  <div class="col-5 text-right">
+    <%= bootstrap_form_tag url:'', method: :get, html:{class:'form-inline float-right'} do |form| %>
+      <%= form.text_field :q, hide_label:true, placeholder:"Search", value:params[:q] %>
+      <button type="submit" class="btn btn-secondary"><%= fa_icon('search') %></button>
+    <% end %>
+  </div>
+</div>
+<%= render('linked_hosts') %>

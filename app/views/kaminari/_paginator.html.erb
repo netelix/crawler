@@ -1,0 +1,41 @@
+<%= paginator.render do %>
+
+<div class="clearfix"></div>
+
+<div class="row">
+  <div class="col-md-12">
+    <!-- Pagination -->
+    <div class="pagination-container mb-4">
+      <nav>
+        <ul class="pagination">
+          <% unless current_page.first? %>
+            <li class="page-item">
+              <%= link_to '<'.html_safe, pager_url(current_page-1), rel: 'prev', class:"page-link", remote: remote %>
+            </li>
+          <% end %>
+          <% each_page do |page| %>
+            <% if page.left_outer? || page.right_outer? || page.inside_window? %>
+              <% if page.current? %>
+                <li class="page-item">
+                  <%= content_tag :a, page, remote: remote, rel: (page.next? ? 'next' : (page.prev? ? 'prev' : nil)), class: 'current-page page-link' %>
+                </li>
+              <% else %>
+                <li class="page-item">
+                  <%= link_to page, pager_url(page), remote: remote, rel: (page.next? ? 'next' : (page.prev? ? 'prev' : nil)), class:"page-link" %>
+                </li>
+              <% end %>
+            <% elsif !page.was_truncated? %>
+            <% end %>
+          <% end %>
+          <% unless current_page.last? %>
+            <li class="page-item">
+              <%= link_to '>'.html_safe, pager_url(current_page+1), rel: 'next', class:"page-link", remote: remote %>
+            </li>
+        <% end %>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<div class="clearfix"></div>
+<% end %>

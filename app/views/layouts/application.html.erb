@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>" prefix="og: http://ogp.me/ns#">
   <head>
-    <title>Crawler</title>
+    <%= render('layouts/marketing_scripts') %>
+    <%= render('layouts/meta') %>
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
-
-  <body>
-    <%= yield %>
+  <body class="<%= controller_path.gsub('/', '_') %> <%= action_name %> d-flex flex-grow-1 flex-column">
+    <%= render 'layouts/header' unless (content_for(:hide_nav) == 'true') %>
+    <%= render 'layouts/main' %>
+  <div class="flash-container">
+    <%= render 'shared/flashes' %>
+  </div>
+    <%= render('layouts/footer') %>
+    <%= render('layouts/bottom_scripts') %>
   </body>
 </html>

@@ -13,7 +13,7 @@ module Pages
     end
 
     def clean_emails(emails)
-      emails.map { |email| email.gsub(' ', '').gsub("\u00A0", '') }
+      emails.map { |email| email&.gsub(' ', '')&.gsub("\u00A0", '') }.compact
     end
 
     def search_for_mailto_links

@@ -10,8 +10,6 @@ module Forms
       page = ::Pages::Crawl.run!(url: url)
       ::StartCrawlerWorker.perform_async(url, nil);
 
-      host.links.pluck(:id)
-
       page
     end
   end

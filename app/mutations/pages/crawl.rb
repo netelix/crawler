@@ -173,12 +173,10 @@ module Pages
           if page.code.in?([301, 302])
             current_page.update(redirect_to: page.headers['location'])
             create_page(page.headers['location'])
+          end
+          current_page.update(error: '404 error') if page.code.in?([404])
 
-            nil
-          end
-          if page.code.in?([404])
-            current_page.update(error: '404 error')
-          end
+          nil
         rescue StandardError => error
           current_page.update(error: error.message)
           nil

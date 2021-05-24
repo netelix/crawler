@@ -11,7 +11,7 @@
   <% hosts.each do |host| %>
     <tr onclick="javascript:onTableRowClick(event, this)">
       <td><%= link_to(host.host, admin_host_path(host)) %></td>
-      <td><%= 'available' if host.domain_available? %></td>
+      <td><%= "available (#{l(host.updated_at, format: :short)})" if host.domain_available? %></td>
       <td><%= host.number_of_linked_hosts %></td>
       <td><%= host.number_of_crawled_pages || 0 %>/<%= host.number_of_pages %></td>
     </tr>

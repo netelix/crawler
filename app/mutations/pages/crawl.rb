@@ -36,9 +36,10 @@ module Pages
          )
         return
       end
-      return unless current_page.domain_status.nil?
 
-      current_page.update!(
+      return unless current_page.host.domain_status.nil?
+
+      current_page.host.update!(
         domain_status: Domains::CheckAvailability.run!(domain: domain)
       )
     end

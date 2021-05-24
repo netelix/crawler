@@ -7,6 +7,7 @@
       <%= form.text_field :q, hide_label:true, placeholder:"Search", value:params[:q] %>
       <button type="submit" class="btn btn-secondary"><%= fa_icon('search') %></button>
     <% end %>
+    <%= link_to fa_icon('table', class: 'btn btn-info ml-2 float-right'), admin_hosts_path(filter: params[:filter], format: :xls) %>
   </div>
 </div>
 <ul class="nav nav-tabs">

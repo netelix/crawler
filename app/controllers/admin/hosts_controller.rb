@@ -22,6 +22,21 @@ module Admin
       %w[start_crawl new_crawl edit_filter update_filter]
     end
 
+    def index
+      respond_to do |format|
+        format.html
+        format.xls do
+          send_data(CSV.generate(headers: true) do |csv|
+            csv << [:host, :available]
+
+            hosts.limit(nil).offset(nil).each do |host|
+              csv << [host.host, "available (#{l(host.updated_at, format: :short)})"]
+            end
+          end)
+        end
+      end
+    end
+
     def start_crawl
       outcome = new_crawl_form.process_with_params(params)
       if outcome.success?
@@ -63,8 +78,12 @@ module Admin
           :number_of_crawled_pages,
           :number_of_linked_hosts
         )
-        .reorder(number_of_linked_hosts: :desc)
+        .reorder(hosts_order_column => :desc)
         .page(params[:p])
+    end
+
+    def hosts_order_column
+      filter_free_domains? ? :updated_at : :number_of_linked_hosts
     end
 
     def hosts_base_request
@@ -77,9 +96,7 @@ module Admin
               Host.search(params[:q])
             end
 
-          request = request.with_domain_available.reorder(id: :desc) if params[
-            :filter
-          ] == 'free'
+          request = request.with_domain_available if filter_free_domains?
           request
         end
     end
@@ -95,7 +112,11 @@ module Admin
     end
 
     def pages_to_crawl
-      host.pages.without_filtered_urls(host.filter).where(crawled_at: nil).page(params[:p])
+      host
+        .pages
+        .without_filtered_urls(host.filter)
+        .where(crawled_at: nil)
+        .page(params[:p])
     end
 
     def emails
@@ -138,6 +159,10 @@ module Admin
       return if params[:action] != 'show'
 
       params['section'] || 'pages'
+    end
+
+    def filter_free_domains?
+      params[:filter] == 'free'
     end
 
     def pager_url(page)

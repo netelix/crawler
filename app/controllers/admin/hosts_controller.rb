@@ -89,13 +89,7 @@ module Admin
     end
 
     def filtered_pages
-      request = host.pages
-
-      conditions_sql = host.filter&.split("\n").map do |expression|
-        "url ~ '#{expression}'"
-      end.join(' OR ')
-
-      request = request.where(conditions_sql)
+      request = host.pages.with_filtered_urls(host.filter)
 
       request.page(params[:p])
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_21_151540) do
+ActiveRecord::Schema.define(version: 2021_05_24_174929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 2021_05_21_151540) do
     t.datetime "page_crawled_at"
     t.datetime "linked_hosts_crawled_at"
     t.text "filter"
+    t.index ["domain_status"], name: "index_hosts_on_domain_status"
     t.index ["host"], name: "index_pages_on_host", unique: true
   end
 
@@ -61,6 +62,7 @@ ActiveRecord::Schema.define(version: 2021_05_21_151540) do
     t.string "ahref_note"
     t.json "history_titles"
     t.bigint "host_id"
+    t.index ["host_id", "crawled_at"], name: "index_pages_on_host_id_and_crawled_at"
     t.index ["host_id"], name: "index_pages_on_host_id"
     t.index ["url"], name: "index_pages_on_url", unique: true
   end

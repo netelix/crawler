@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-7">
-    <h1>Hosts</h1>
+    <h1>Hosts (<%= hosts_base_request.limit(nil).offset(nil).count %>)</h1>
   </div>
   <div class="col-5 text-right">
     <%= bootstrap_form_tag url:'', method: :get, html:{class:'form-inline float-right'} do |form| %>
@@ -9,4 +9,12 @@
     <% end %>
   </div>
 </div>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <%= link_to('All', admin_hosts_path, class: "nav-link #{:active if params[:filter].blank?}") %>
+  </li>
+  <li class="nav-item">
+    <%= link_to("Domain available", admin_hosts_path(filter: :free), class: "nav-link #{:active if params[:params] == 'free'}") %>
+  </li>
+</ul>
 <%= render('linked_hosts') %>

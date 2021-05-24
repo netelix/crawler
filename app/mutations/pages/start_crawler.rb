@@ -20,7 +20,7 @@ module Pages
       puts "checking next page after #{page.url} from host #{page.host} (#{number_of_crawled_pages} pages already crawled, limit #{host_limit})"
 
       return if host_limit.present? && number_of_crawled_pages > host_limit
-      Page.where(host: page.host).where(crawled_at: nil).first
+      page.host.pages.without_filtered_urls(page.host.filter).where(crawled_at: nil).first
     end
   end
 end

@@ -47,7 +47,11 @@ Rails
           get :new_crawl
           post :start_crawl
         end
-        member { post :start_linked_hosts_crawl }
+        member do
+          post :start_linked_hosts_crawl
+          get :edit_filter
+          post :update_filter
+        end
       end
 
       resources :pages

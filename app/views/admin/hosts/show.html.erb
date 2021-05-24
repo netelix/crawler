@@ -12,10 +12,16 @@
 </div>
 <table class="table">
   <tr>
-    <td class="text-right">Found pages</td>
+    <td class="text-right">Found pages
+      <div class="small">
+        <%= link_to_modal('filter', edit_filter_admin_host_path(host)) %>
+      </div>
+    </td>
     <td><%= host.pages.count %></td>
     <td class="text-right">Crawled pages</td>
     <td><%= host.pages.where.not(crawled_at: nil).count %></td>
+    <td class="text-right">Pages to crawl</td>
+    <td><%= pages_to_crawl.limit(nil).offset(nil).count %></td>
   </tr>
   <tr>
     <td class="text-right">Linked hosts
@@ -30,6 +36,8 @@
     </td>
     <td class="text-right">Emails from linked hosts</td>
     <td><%= emails.reorder('email').limit(nil).pluck(:email).count %></td>
+    <td class="text-right">Filtered pages</td>
+    <td><%= filtered_pages.limit(nil).offset(nil).count %></td>
   </tr>
 </table>
 
@@ -43,11 +51,51 @@
   <li class="nav-item">
     <%= link_to('Linked emails', admin_host_path(id: host.id, section: :linked_emails), class: "nav-link #{:active if section_linked_emails?}") %>
   </li>
+  <li class="nav-item">
+    <%= link_to('Filtered pages', admin_host_path(id: host.id, section: :filtered_pages), class: "nav-link #{:active if section_filtered_pages?}") %>
+  </li>
+  <li class="nav-item">
+    <%= link_to('Pages to crawl', admin_host_path(id: host.id, section: :pages_to_crawl), class: "nav-link #{:active if section_pages_to_crawl?}") %>
+  </li>
 </ul>
 <% if section_pages? %>
   <table class="table table-sm">
     <tbody>
     <% pages.each do |page| %>
+      <tr onclick="javascript:onTableRowClick(event, this)">
+        <td><%= link_to((page.title if page.title.present?), page.url, target: :blank) %>
+          <% if page.error %>
+            <div class="text-danger small"><%= page.error %></div>
+          <% end %>
+        </td>
+        <td><%= l(page.crawled_at, format: :short) if page.crawled_at %></td>
+        <td></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <%= paginate pages, param_name: :p %>
+<% elsif section_filtered_pages? %>
+  <table class="table table-sm">
+    <tbody>
+    <% filtered_pages.each do |page| %>
+      <tr onclick="javascript:onTableRowClick(event, this)">
+        <td><%= link_to((page.title if page.title.present?), page.url, target: :blank) %>
+          <% if page.error %>
+            <div class="text-danger small"><%= page.error %></div>
+          <% end %>
+        </td>
+        <td><%= l(page.crawled_at, format: :short) if page.crawled_at %></td>
+        <td></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <%= paginate pages, param_name: :p %>
+<% elsif section_pages_to_crawl? %>
+  <table class="table table-sm">
+    <tbody>
+    <% pages_to_crawl.each do |page| %>
       <tr onclick="javascript:onTableRowClick(event, this)">
         <td><%= link_to((page.title if page.title.present?), page.url, target: :blank) %>
           <% if page.error %>

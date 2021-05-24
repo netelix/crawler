@@ -1,0 +1,5 @@
+<%= content_for(:title, 'Edit host filter') %>
+<%= bootstrap_form_with_mutation(form_filter, update_filter_admin_host_url(host)) do |form| %>
+  <%= form.text_area(:filter) %>
+  <%= form.submit('Save') %>
+<% end %>

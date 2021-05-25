@@ -112,7 +112,7 @@ module Pages
     end
 
     def host_from_url(_url)
-      splitted_href(_url).first.try(:[], 3)
+      splitted_href(_url).first.try(:[], 3)&.gsub(' ', '')
     end
 
     def splitted_href(href)
